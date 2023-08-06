@@ -25,13 +25,21 @@ class CharCategories(enum.Enum):
 def main():
     args: argparse.Namespace = parse_args()
     type_: str = args.type
-    
-    if type_ == "name":
+
+    if type_ == "num":
+        generate_number(args)
+    elif type_ == "name":
         generate_names(args)
     elif type_ == "pass":
         generate_password(args)
     else:
         raise ValueError("Invalid type")
+
+
+def generate_number(args: argparse.Namespace) -> None:
+    min_: int = args.min
+    max_: int = args.max
+    print(secrets.randbelow(max_ - min_ + 1) + min_)
 
 
 def generate_names(args: argparse.Namespace) -> None:
@@ -118,6 +126,18 @@ def parse_args() -> argparse.Namespace:
     )
 
     subparsers = parser.add_subparsers(dest="type", required=True)
+
+    number_parser = subparsers.add_parser("num", help="Generate a random number")
+    number_parser.add_argument(
+        "min",
+        type=int,
+        help="Minimum possible number",
+    )
+    number_parser.add_argument(
+        "max",
+        type=int,
+        help="Maximum possible number",
+    )
 
     name_parser = subparsers.add_parser("name", help="Generate random names")
     name_parser.add_argument(

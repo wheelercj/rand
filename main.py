@@ -25,23 +25,17 @@ class CharCategories(enum.Enum):
 def main():
     args: argparse.Namespace = parse_args()
     type_: str = args.type
-    length: int = args.length
-    exclude: set[str] = set(args.exclude) if args.exclude else set()
-    exclude_categories: list[str] = args.exclude_category or []
-    include: set[str] = set(args.include) if args.include else set()
-    include_categories: list[str] = args.include_category or []
-
+    
     if type_ == "name":
-        generate_names(count=length)
+        generate_names(args)
     elif type_ == "pass":
-        generate_password(
-            length, exclude, exclude_categories, include, include_categories
-        )
+        generate_password(args)
     else:
         raise ValueError("Invalid type")
 
 
-def generate_names(count: int) -> None:
+def generate_names(args: argparse.Namespace) -> None:
+    count: int = args.count
     with open("nouns.txt") as nouns_file:
         nouns: list[str] = nouns_file.read().splitlines()
     with open("adjectives.txt") as adjectives_file:
@@ -50,13 +44,13 @@ def generate_names(count: int) -> None:
         print(secrets.choice(adjectives) + secrets.choice(nouns))
 
 
-def generate_password(
-    length: int,
-    exclude: set[str],
-    exclude_categories: list[str],
-    include: set[str],
-    include_categories: list[str],
-) -> None:
+def generate_password(args: argparse.Namespace) -> None:
+    length: int = args.length
+    exclude: set[str] = set(args.exclude) if args.exclude else set()
+    exclude_categories: list[str] = args.exclude_category or []
+    include: set[str] = set(args.include) if args.include else set()
+    include_categories: list[str] = args.include_category or []
+
     remaining_chars: set[str] = get_chosen_chars(
         exclude, exclude_categories, include, include_categories
     )
@@ -113,36 +107,46 @@ def get_chosen_chars(
 
 
 def parse_args() -> argparse.Namespace:
-    description: str = textwrap.dedent(
-        """\
-        Generate random text.
-        
-        You cannot both include and exclude characters or character categories.
-        """
-    )
     parser = argparse.ArgumentParser(
         prog="rand",
-        description=description,
+        description=textwrap.dedent(
+            """\
+            Generate random text.
+            """
+        ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument(
-        "type",
-        type=str,
-        choices=["name", "pass"],
-        help="Type of random text to generate",
+
+    subparsers = parser.add_subparsers(dest="type", required=True)
+
+    name_parser = subparsers.add_parser("name", help="Generate random names")
+    name_parser.add_argument(
+        "count",
+        type=int,
+        help="Number of names to generate",
     )
-    parser.add_argument(
+
+    pass_parser = subparsers.add_parser(
+        "pass",
+        help="Generate a random password",
+        description=textwrap.dedent(
+            """\
+            You cannot both include and exclude characters or character categories.
+            """
+        ),
+    )
+    pass_parser.add_argument(
         "length",
         type=int,
-        help="Length of text to generate",
+        help="Length of password to generate",
     )
-    parser.add_argument(
+    pass_parser.add_argument(
         "-x",
         "--exclude",
         type=str,
         help="Characters to exclude from random password generation",
     )
-    parser.add_argument(
+    pass_parser.add_argument(
         "-xc",
         "--exclude-category",
         type=str,
@@ -156,13 +160,13 @@ def parse_args() -> argparse.Namespace:
         help="Character categories to exclude from random password generation",
         nargs="*",
     )
-    parser.add_argument(
+    pass_parser.add_argument(
         "-i",
         "--include",
         type=str,
         help="Characters to include in random password generation",
     )
-    parser.add_argument(
+    pass_parser.add_argument(
         "-ic",
         "--include-category",
         type=str,
@@ -176,6 +180,7 @@ def parse_args() -> argparse.Namespace:
         help="Character categories to include in random password generation",
         nargs="*",
     )
+
     args: argparse.Namespace = parser.parse_args()
     return args
 

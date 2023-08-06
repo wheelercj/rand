@@ -2,6 +2,8 @@
 
 A command-line tool for randomly generating passwords, names, and more. The random password generation is cryptographically secure.
 
+![demo](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExanJsZ3FsdDVjcHJiMTNsZGs4Z2tmZ2lyb241c2drZHR5OXpsNHh4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/k3gaUdc90Q8n75QylI/giphy.gif)
+
 ## usage
 
 Download and run `main.py`.

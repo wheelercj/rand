@@ -51,10 +51,23 @@ def generate_number(args: argparse.Namespace) -> None:
 
 def generate_names(args: argparse.Namespace) -> None:
     count: int = args.count
+
     with open(os.path.join(folder_path, "nouns.txt")) as nouns_file:
         nouns: list[str] = nouns_file.read().splitlines()
     with open(os.path.join(folder_path, "adjectives.txt")) as adjectives_file:
         adjectives: list[str] = adjectives_file.read().splitlines()
+
+    while "" in nouns:
+        nouns.remove("")
+    if not nouns:
+        print("Error: no nouns found")
+        sys.exit(1)
+    while "" in adjectives:
+        adjectives.remove("")
+    if not adjectives:
+        print("Error: no adjectives found")
+        sys.exit(1)
+
     for _ in range(count):
         print(secrets.choice(adjectives) + secrets.choice(nouns))
 
@@ -70,7 +83,7 @@ def generate_password(args: argparse.Namespace) -> None:
         exclude, exclude_categories, include, include_categories
     )
     if not remaining_chars:
-        print("No characters were included or all were excluded")
+        print("Error: no characters were included or all were excluded")
         sys.exit(1)
     remaining_chars_list: list[str] = list(remaining_chars)
 
@@ -87,7 +100,7 @@ def get_chosen_chars(
     include_categories: list[str],
 ) -> set[str]:
     if (include or include_categories) and (exclude or exclude_categories):
-        print("You cannot both include and exclude characters")
+        print("Error: you cannot both include and exclude characters")
         sys.exit(1)
 
     remaining_chars: set[str] = set()

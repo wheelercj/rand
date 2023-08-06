@@ -1,9 +1,11 @@
 import argparse
 import enum
+import os
 import secrets
 import sys
 import textwrap
 
+folder_path: str = os.path.dirname(__file__.replace("\\", "/"))
 
 alphabet: set[str] = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 lower: set[str] = set("abcdefghijklmnopqrstuvwxyz")
@@ -50,9 +52,9 @@ def generate_number(args: argparse.Namespace) -> None:
 
 def generate_names(args: argparse.Namespace) -> None:
     count: int = args.count
-    with open("nouns.txt") as nouns_file:
+    with open(os.path.join(folder_path, "nouns.txt")) as nouns_file:
         nouns: list[str] = nouns_file.read().splitlines()
-    with open("adjectives.txt") as adjectives_file:
+    with open(os.path.join(folder_path, "adjectives.txt")) as adjectives_file:
         adjectives: list[str] = adjectives_file.read().splitlines()
     for _ in range(count):
         print(secrets.choice(adjectives) + secrets.choice(nouns))

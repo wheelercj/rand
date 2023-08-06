@@ -36,6 +36,8 @@ def main():
         choose(args)
     elif type_ == "choices":
         choose_multiple(args)
+    elif type_ == "shuffle":
+        shuffle(args)
     else:
         raise ValueError("Invalid type")
 
@@ -136,6 +138,12 @@ def choose_multiple(args: argparse.Namespace) -> None:
         if choice not in chosen:
             chosen.append(choice)
     print(" ".join(chosen))
+
+
+def shuffle(args: argparse.Namespace) -> None:
+    items: list[str] = args.items
+    secrets.SystemRandom().shuffle(items)
+    print(" ".join(items))
 
 
 def parse_args() -> argparse.Namespace:
@@ -249,6 +257,17 @@ def parse_args() -> argparse.Namespace:
         "items",
         type=str,
         help="Items to choose from",
+        nargs="+",
+    )
+
+    shuffle_parser = subparsers.add_parser(
+        "shuffle",
+        help="Shuffle a list",
+    )
+    shuffle_parser.add_argument(
+        "items",
+        type=str,
+        help="Items to shuffle",
         nargs="+",
     )
 

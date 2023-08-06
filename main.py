@@ -126,8 +126,11 @@ def choose(args: argparse.Namespace) -> None:
 def choose_multiple(args: argparse.Namespace) -> None:
     items: list[str] = args.items
     count: int = args.count
-    if count > len(items):
-        print("Error: cannot choose more items than are available")
+    if count >= len(items):
+        print(
+            "Error: number of items to choose must be less than number of items"
+            " available"
+        )
         sys.exit(1)
 
     chosen: list[str] = []

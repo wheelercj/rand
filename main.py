@@ -32,6 +32,8 @@ def main():
         generate_names(args)
     elif type_ == "pass":
         generate_password(args)
+    elif type_ == "choice":
+        choose(args)
     else:
         raise ValueError("Invalid type")
 
@@ -112,6 +114,11 @@ def get_chosen_chars(
         return remaining_chars
     else:
         return all_chars
+
+
+def choose(args: argparse.Namespace) -> None:
+    items: list[str] = args.items
+    print(secrets.choice(items))
 
 
 def parse_args() -> argparse.Namespace:
@@ -199,6 +206,17 @@ def parse_args() -> argparse.Namespace:
         ],
         help="Character categories to include in random password generation",
         nargs="*",
+    )
+
+    choice_parser = subparsers.add_parser(
+        "choice",
+        help="Choose a random item from a list",
+    )
+    choice_parser.add_argument(
+        "items",
+        type=str,
+        help="Items to choose from",
+        nargs="+",
     )
 
     args: argparse.Namespace = parser.parse_args()

@@ -7,21 +7,20 @@ import textwrap
 
 folder_path: str = os.path.dirname(__file__.replace("\\", "/"))
 
-alphabet: set[str] = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-lower: set[str] = set("abcdefghijklmnopqrstuvwxyz")
-upper: set[str] = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-number: set[str] = set("0123456789")
-special: set[str] = set(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
-
-all_chars: set[str] = alphabet | number | special
-
 
 class CharCategories(enum.Enum):
-    ALPHABET = "alphabet"
-    LOWER = "lower"
-    UPPER = "upper"
-    NUMBER = "number"
-    SPECIAL = "special"
+    alphabet: set[str] = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    lower: set[str] = set("abcdefghijklmnopqrstuvwxyz")
+    upper: set[str] = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    number: set[str] = set("0123456789")
+    special: set[str] = set(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+
+
+all_chars: set[str] = (
+    CharCategories.alphabet.value
+    | CharCategories.number.value
+    | CharCategories.special.value
+)
 
 
 def main():
@@ -94,29 +93,13 @@ def get_chosen_chars(
     remaining_chars: set[str] = set()
     if exclude or exclude_categories:
         remaining_chars = all_chars - exclude
-        if CharCategories.ALPHABET.value in exclude_categories:
-            remaining_chars -= alphabet
-        if CharCategories.LOWER.value in exclude_categories:
-            remaining_chars -= lower
-        if CharCategories.UPPER.value in exclude_categories:
-            remaining_chars -= upper
-        if CharCategories.NUMBER.value in exclude_categories:
-            remaining_chars -= number
-        if CharCategories.SPECIAL.value in exclude_categories:
-            remaining_chars -= special
+        for category in exclude_categories:
+            remaining_chars -= CharCategories[category].value
         return remaining_chars
     elif include or include_categories:
         remaining_chars = include
-        if CharCategories.ALPHABET.value in include_categories:
-            remaining_chars |= alphabet
-        if CharCategories.LOWER.value in include_categories:
-            remaining_chars |= lower
-        if CharCategories.UPPER.value in include_categories:
-            remaining_chars |= upper
-        if CharCategories.NUMBER.value in include_categories:
-            remaining_chars |= number
-        if CharCategories.SPECIAL.value in include_categories:
-            remaining_chars |= special
+        for category in include_categories:
+            remaining_chars |= CharCategories[category].value
         return remaining_chars
     else:
         return all_chars
@@ -205,11 +188,11 @@ def parse_args() -> argparse.Namespace:
         "--exclude-category",
         type=str,
         choices=[
-            CharCategories.ALPHABET.value,
-            CharCategories.LOWER.value,
-            CharCategories.UPPER.value,
-            CharCategories.NUMBER.value,
-            CharCategories.SPECIAL.value,
+            CharCategories.alphabet.name,
+            CharCategories.lower.name,
+            CharCategories.upper.name,
+            CharCategories.number.name,
+            CharCategories.special.name,
         ],
         help="Character categories to exclude from random password generation",
         nargs="*",
@@ -225,11 +208,11 @@ def parse_args() -> argparse.Namespace:
         "--include-category",
         type=str,
         choices=[
-            CharCategories.ALPHABET.value,
-            CharCategories.LOWER.value,
-            CharCategories.UPPER.value,
-            CharCategories.NUMBER.value,
-            CharCategories.SPECIAL.value,
+            CharCategories.alphabet.name,
+            CharCategories.lower.name,
+            CharCategories.upper.name,
+            CharCategories.number.name,
+            CharCategories.special.name,
         ],
         help="Character categories to include in random password generation",
         nargs="*",

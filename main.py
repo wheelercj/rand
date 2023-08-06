@@ -34,6 +34,8 @@ def main():
         generate_password(args)
     elif type_ == "choice":
         choose(args)
+    elif type_ == "choices":
+        choose_multiple(args)
     else:
         raise ValueError("Invalid type")
 
@@ -119,6 +121,21 @@ def get_chosen_chars(
 def choose(args: argparse.Namespace) -> None:
     items: list[str] = args.items
     print(secrets.choice(items))
+
+
+def choose_multiple(args: argparse.Namespace) -> None:
+    items: list[str] = args.items
+    count: int = args.count
+    if count > len(items):
+        print("Error: cannot choose more items than are available")
+        sys.exit(1)
+
+    chosen: list[str] = []
+    while len(chosen) < count:
+        choice: str = secrets.choice(items)
+        if choice not in chosen:
+            chosen.append(choice)
+    print(" ".join(chosen))
 
 
 def parse_args() -> argparse.Namespace:
@@ -213,6 +230,22 @@ def parse_args() -> argparse.Namespace:
         help="Choose a random item from a list",
     )
     choice_parser.add_argument(
+        "items",
+        type=str,
+        help="Items to choose from",
+        nargs="+",
+    )
+
+    choices_parser = subparsers.add_parser(
+        "choices",
+        help="Choose multiple random items from a list without replacement",
+    )
+    choices_parser.add_argument(
+        "count",
+        type=int,
+        help="Number of items to choose",
+    )
+    choices_parser.add_argument(
         "items",
         type=str,
         help="Items to choose from",

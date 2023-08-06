@@ -11,7 +11,7 @@ alphabet: set[str] = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 lower: set[str] = set("abcdefghijklmnopqrstuvwxyz")
 upper: set[str] = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 number: set[str] = set("0123456789")
-special: set[str] = set("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+special: set[str] = set(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
 
 all_chars: set[str] = alphabet | number | special
 

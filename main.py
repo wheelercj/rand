@@ -5,21 +5,20 @@ import secrets
 import sys
 import textwrap
 
+
 folder_path: str = os.path.dirname(__file__.replace("\\", "/"))
 
 
 class CharCategories(enum.Enum):
-    alphabet: set[str] = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    lower: set[str] = set("abcdefghijklmnopqrstuvwxyz")
-    upper: set[str] = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    number: set[str] = set("0123456789")
-    special: set[str] = set(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+    alphabet = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    lower = set("abcdefghijklmnopqrstuvwxyz")
+    upper = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    number = set("0123456789")
+    special = set(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
 
 
 all_chars: set[str] = (
-    CharCategories.alphabet.value
-    | CharCategories.number.value
-    | CharCategories.special.value
+    CharCategories.alphabet.value | CharCategories.number.value | CharCategories.special.value
 )
 
 
@@ -127,10 +126,7 @@ def choose_multiple(args: argparse.Namespace) -> None:
     items: list[str] = args.items
     count: int = args.count
     if count >= len(items):
-        print(
-            "Error: number of items to choose must be less than number of items"
-            " available"
-        )
+        print("Error: number of items to choose must be less than number of items available")
         sys.exit(1)
 
     chosen: list[str] = []

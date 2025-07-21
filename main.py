@@ -112,6 +112,7 @@ colors: list[str] = [
     "pearl",
     "peridot",
     "periwinkle",
+    "phthalo",
     "pink",
     "platinum",
     "plum",
